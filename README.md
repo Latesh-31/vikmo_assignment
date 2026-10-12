@@ -1,4 +1,7 @@
-# VIKMO DealerDesk — Django Implementation
+# VIKMO DealerDesk — Django Track
+
+**Track:** `django`  
+**Video Walkthrough Link:** `https://youtu.be/your-video-link-here` (or Loom/Google Drive link)  
 
 DealerDesk is an ERP & order management backend for motorcycle parts dealers and suppliers, built with Django 4.2+ and Django REST Framework on PostgreSQL.
 
