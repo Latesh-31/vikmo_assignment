@@ -1,3 +1,5 @@
+import csv
+import io
 from django.db.models import Q
 from rest_framework import status
 from rest_framework.response import Response
@@ -113,3 +115,81 @@ class InventoryUpdateView(APIView):
         product.stock = qty
         product.save(update_fields=["stock", "updated_at"])
         return Response({"sku": product.sku, "quantity": product.stock}, status=status.HTTP_200_OK)
+
+
+class ProductBulkUploadView(APIView):
+    """
+    POST /api/products/bulk-upload/
+    Accepts multipart/form-data with a 'file' field containing CSV.
+    CSV columns: sku, name, category, brand, vehicle_fitment, price, stock, description
+    Returns: { created: N, updated: M, errors: [...] }
+    """
+    def post(self, request):
+        if "file" not in request.FILES:
+            raise ValidationError("No file uploaded. Expected 'file' in multipart/form-data.")
+
+        uploaded_file = request.FILES["file"]
+        if not uploaded_file.name.endswith(".csv"):
+            raise ValidationError("File must be a CSV.")
+
+        try:
+            decoded = uploaded_file.read().decode("utf-8")
+        except UnicodeDecodeError:
+            raise ValidationError("CSV file must be UTF-8 encoded.")
+
+        reader = csv.DictReader(io.StringIO(decoded))
+        required_fields = {"sku", "name", "category", "brand", "vehicle_fitment", "price", "stock"}
+        missing = required_fields - set(reader.fieldnames or [])
+        if missing:
+            raise ValidationError(f"CSV missing required columns: {', '.join(sorted(missing))}")
+
+        created = 0
+        updated = 0
+        errors = []
+
+        for i, row in enumerate(reader, start=2):  # start=2 accounts for header row
+            try:
+                sku = row["sku"].strip()
+                name = row["name"].strip()
+                category = row["category"].strip()
+                brand = row["brand"].strip()
+                vehicle_fitment = row["vehicle_fitment"].strip()
+                price = row["price"].strip()
+                stock = int(row["stock"].strip()) if row.get("stock") else 0
+                description = row.get("description", "").strip()
+
+                if not sku:
+                    errors.append(f"Row {i}: SKU is required")
+                    continue
+
+                if Product.objects.filter(sku=sku).exists():
+                    p = Product.objects.get(sku=sku)
+                    p.name = name
+                    p.category = category
+                    p.brand = brand
+                    p.vehicle_fitment = vehicle_fitment
+                    p.price = price
+                    p.stock = stock
+                    p.description = description
+                    p.save()
+                    updated += 1
+                else:
+                    Product.objects.create(
+                        sku=sku,
+                        name=name,
+                        category=category,
+                        brand=brand,
+                        vehicle_fitment=vehicle_fitment,
+                        price=price,
+                        stock=stock,
+                        description=description,
+                    )
+                    created += 1
+
+            except Exception as e:
+                errors.append(f"Row {i}: {str(e)}")
+
+        return Response(
+            {"created": created, "updated": updated, "errors": errors},
+            status=status.HTTP_200_OK if not errors else status.HTTP_207_MULTI_STATUS
+        )

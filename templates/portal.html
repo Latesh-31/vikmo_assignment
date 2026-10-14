@@ -1,1363 +1,417 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VIKMO DealerDesk — Distributor Operating System</title>
+  <meta name="description" content="VIKMO DealerDesk — a modern ERP and order management platform for motorcycle parts dealers and suppliers.">
+
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #090d16;
-      --card-bg: #111827;
-      --card-hover: #172033;
-      --border: #1f293d;
-      --border-focus: #38bdf8;
-      --text: #f1f5f9;
-      --text-muted: #94a3b8;
-      --primary: #3b82f6;
-      --primary-glow: rgba(59, 130, 246, 0.25);
-      --accent: #06b6d4;
-      --accent-glow: rgba(6, 182, 212, 0.2);
-      --success: #10b981;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --purple: #8b5cf6;
-      --radius: 12px;
-      --font-main: 'Plus Jakarta Sans', -apple-system, sans-serif;
-      --font-display: 'Outfit', sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
-    }
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--font-main);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow-x: hidden;
-    }
+  <!-- Styles -->
+  <link rel="stylesheet" href="{% static 'css/design-tokens.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components.css' %}">
 
-    /* Top Navigation */
-    header {
-      background: rgba(17, 24, 39, 0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      padding: 0.85rem 1.5rem;
-    }
-    .header-inner {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-    }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      text-decoration: none;
-      color: inherit;
-    }
-    .brand-logo {
-      width: 38px;
-      height: 38px;
-      background: linear-gradient(135deg, #3b82f6, #06b6d4);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-family: var(--font-display);
-      font-size: 1.25rem;
-      color: #fff;
-      box-shadow: 0 0 15px var(--accent-glow);
-    }
-    .brand-title {
-      font-family: var(--font-display);
-      font-size: 1.25rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      background: linear-gradient(to right, #fff, #93c5fd);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .brand-badge {
-      font-size: 0.65rem;
-      padding: 0.2rem 0.5rem;
-      background: rgba(6, 182, 212, 0.15);
-      border: 1px solid rgba(6, 182, 212, 0.3);
-      color: var(--accent);
-      border-radius: 9999px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .header-controls {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    .dealer-select-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: #0f172a;
-      border: 1px solid var(--border);
-      padding: 0.35rem 0.75rem;
-      border-radius: 8px;
-    }
-    .dealer-select-label {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      font-weight: 600;
-    }
-    select.dealer-select {
-      background: transparent;
-      border: none;
-      color: #fff;
-      font-family: inherit;
-      font-size: 0.85rem;
-      font-weight: 500;
-      outline: none;
-      cursor: pointer;
-    }
-    select.dealer-select option {
-      background: #0f172a;
-      color: #fff;
-    }
-
-    .cart-btn {
-      background: linear-gradient(135deg, #1e293b, #0f172a);
-      border: 1px solid var(--border);
-      color: #fff;
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      font-family: inherit;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: all 0.2s ease;
-    }
-    .cart-btn:hover {
-      border-color: var(--primary);
-      box-shadow: 0 0 10px var(--primary-glow);
-    }
-    .cart-count-badge {
-      background: var(--primary);
-      color: #fff;
-      padding: 0.15rem 0.45rem;
-      border-radius: 9999px;
-      font-size: 0.75rem;
-      font-weight: 700;
-    }
-
-    /* Tabs Bar */
-    .nav-tabs {
-      background: #0f172a;
-      border-bottom: 1px solid var(--border);
-      padding: 0 1.5rem;
-    }
-    .nav-tabs-inner {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: flex;
-      gap: 0.5rem;
-      overflow-x: auto;
-    }
-    .tab-btn {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-family: inherit;
-      font-size: 0.875rem;
-      font-weight: 600;
-      padding: 0.9rem 1.1rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      border-bottom: 2px solid transparent;
-      transition: all 0.2s;
-      white-space: nowrap;
-    }
-    .tab-btn:hover { color: #fff; }
-    .tab-btn.active {
-      color: var(--accent);
-      border-bottom-color: var(--accent);
-    }
-
-    /* Main Container */
-    main {
-      flex: 1;
-      max-width: 1400px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 1.5rem;
-    }
-
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-
-    /* Common Card Styles */
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.25rem;
-      margin-bottom: 1.25rem;
-    }
-
-    /* Filters Bar */
-    .filters-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr auto;
-      gap: 0.75rem;
-      align-items: center;
-      margin-bottom: 1.25rem;
-    }
-    .input-field {
-      background: #0b1120;
-      border: 1px solid var(--border);
-      color: #fff;
-      padding: 0.65rem 0.85rem;
-      border-radius: 8px;
-      font-family: inherit;
-      font-size: 0.875rem;
-      width: 100%;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .input-field:focus {
-      border-color: var(--border-focus);
-    }
-    .btn {
-      background: var(--primary);
-      color: #fff;
-      border: none;
-      padding: 0.65rem 1.15rem;
-      border-radius: 8px;
-      font-family: inherit;
-      font-weight: 600;
-      font-size: 0.875rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      justify-content: center;
-    }
-    .btn:hover {
-      background: #2563eb;
-      box-shadow: 0 0 12px var(--primary-glow);
-    }
-    .btn-secondary {
-      background: #1e293b;
-      border: 1px solid var(--border);
-    }
-    .btn-secondary:hover {
-      background: #334155;
-      box-shadow: none;
-    }
-    .btn-success { background: #059669; }
-    .btn-success:hover { background: #10b981; }
-    .btn-danger { background: #dc2626; }
-    .btn-danger:hover { background: #ef4444; }
-
-    /* Product Grid */
-    .products-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-      gap: 1rem;
-    }
-    .product-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.25rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 0.75rem;
-      transition: all 0.2s ease;
-    }
-    .product-card:hover {
-      background: var(--card-hover);
-      border-color: #2e3d56;
-      transform: translateY(-2px);
-    }
-    .product-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-    }
-    .sku-badge {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      background: #0f172a;
-      border: 1px solid var(--border);
-      color: #38bdf8;
-      padding: 0.2rem 0.5rem;
-      border-radius: 6px;
-      font-weight: 600;
-    }
-    .brand-tag {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-    .product-title {
-      font-size: 0.95rem;
-      font-weight: 600;
-      line-height: 1.4;
-      color: #f8fafc;
-      min-height: 2.6rem;
-    }
-    .product-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-    }
-    .meta-pill {
-      font-size: 0.7rem;
-      padding: 0.15rem 0.45rem;
-      background: #0f172a;
-      border: 1px solid var(--border);
-      color: #cbd5e1;
-      border-radius: 4px;
-    }
-    .product-pricing-stock {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      padding-top: 0.5rem;
-      border-top: 1px solid #1e293b;
-    }
-    .price-value {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #fff;
-      font-family: var(--font-display);
-    }
-    .stock-badge {
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 0.2rem 0.5rem;
-      border-radius: 9999px;
-    }
-    .stock-in {
-      background: rgba(16, 185, 129, 0.15);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      color: #34d399;
-    }
-    .stock-low {
-      background: rgba(245, 158, 11, 0.15);
-      border: 1px solid rgba(245, 158, 11, 0.3);
-      color: #fbbf24;
-    }
-    .stock-out {
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: #f87171;
-    }
-
-    .qty-add-bar {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-    }
-    .qty-stepper {
-      display: flex;
-      align-items: center;
-      background: #0b1120;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      overflow: hidden;
-    }
-    .qty-btn {
-      background: none;
-      border: none;
-      color: #fff;
-      width: 28px;
-      height: 32px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background 0.15s;
-    }
-    .qty-btn:hover { background: #1e293b; }
-    .qty-input {
-      width: 36px;
-      height: 32px;
-      background: transparent;
-      border: none;
-      color: #fff;
-      text-align: center;
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      outline: none;
-    }
-
-    /* Table Styles */
-    .data-table-wrapper {
-      overflow-x: auto;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: #0d1322;
-    }
-    table.data-table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-      font-size: 0.85rem;
-    }
-    table.data-table th {
-      background: #111827;
-      color: var(--text-muted);
-      padding: 0.75rem 1rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      font-size: 0.7rem;
-      letter-spacing: 0.05em;
-      border-bottom: 1px solid var(--border);
-    }
-    table.data-table td {
-      padding: 0.85rem 1rem;
-      border-bottom: 1px solid #1a2234;
-      color: #cbd5e1;
-    }
-    table.data-table tr:hover td {
-      background: rgba(255, 255, 255, 0.02);
-    }
-
-    /* Status Badges */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 0.2rem 0.55rem;
-      border-radius: 9999px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-    }
-    .badge-DRAFT { background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); color: #fbbf24; }
-    .badge-CONFIRMED { background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa; }
-    .badge-DISPATCHED { background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3); color: #a78bfa; }
-    .badge-DELIVERED { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #34d399; }
-    .badge-CANCELLED { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; }
-
-    /* Alerts */
-    .alert {
-      padding: 1rem 1.25rem;
-      border-radius: 8px;
-      margin-bottom: 1rem;
-      font-size: 0.875rem;
-      display: flex;
-      align-items: flex-start;
-      gap: 0.75rem;
-    }
-    .alert-error {
-      background: rgba(239, 68, 68, 0.12);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: #fca5a5;
-    }
-    .alert-success {
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      color: #6ee7b7;
-    }
-
-    /* Assistant Chat */
-    .chat-container {
-      display: flex;
-      flex-direction: column;
-      height: 600px;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
-    .chat-messages {
-      flex: 1;
-      padding: 1.25rem;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-    .chat-msg {
-      max-width: 80%;
-      padding: 0.85rem 1.15rem;
-      border-radius: 12px;
-      font-size: 0.875rem;
-      line-height: 1.5;
-    }
-    .chat-msg-user {
-      align-self: flex-end;
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
-      color: #fff;
-      border-bottom-right-radius: 4px;
-    }
-    .chat-msg-bot {
-      align-self: flex-start;
-      background: #1e293b;
-      color: #e2e8f0;
-      border-bottom-left-radius: 4px;
-      border: 1px solid var(--border);
-    }
-    .tool-call-box {
-      margin-top: 0.5rem;
-      background: #0f172a;
-      border: 1px dashed #334155;
-      padding: 0.5rem 0.75rem;
-      border-radius: 6px;
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      color: #38bdf8;
-    }
-    .chat-input-bar {
-      display: flex;
-      gap: 0.5rem;
-      padding: 1rem;
-      border-top: 1px solid var(--border);
-      background: #0f172a;
-    }
-
-    /* Toast */
-    #toast-container {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    .toast {
-      background: #1e293b;
-      border: 1px solid var(--border);
-      color: #fff;
-      padding: 0.85rem 1.25rem;
-      border-radius: 8px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-      animation: slideIn 0.25s ease-out;
-      font-size: 0.875rem;
-    }
-    @keyframes slideIn {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-  </style>
+  <!-- Theme color for browser chrome -->
+  <meta name="theme-color" content="#4f46e5">
 </head>
 <body>
 
-  <!-- Top Header -->
-  <header>
-    <div class="header-inner">
-      <a href="/" class="brand">
-        <div class="brand-logo">V</div>
-        <div>
-          <span class="brand-title">DealerDesk</span>
-          <span class="brand-badge">Distributor OS</span>
+  <div class="app-layout">
+    <!-- ================================================================
+         SIDEBAR
+         ================================================================ -->
+    <aside class="sidebar" role="navigation" aria-label="Main navigation">
+      <div class="sidebar-brand" aria-label="DealerDesk brand">
+        <div class="sidebar-brand-icon" aria-hidden="true">V</div>
+        <div class="sidebar-brand-text">
+          <div class="sidebar-brand-name">DealerDesk</div>
+          <div class="sidebar-brand-sub">Distributor OS</div>
         </div>
-      </a>
+      </div>
 
-      <div class="header-controls">
-        <div class="dealer-select-wrapper">
-          <span class="dealer-select-label">Dealer:</span>
-          <select id="dealerSelect" class="dealer-select" onchange="onDealerChange()">
-            <option value="1">Loading dealers...</option>
+      <nav class="sidebar-nav" aria-label="Primary">
+        <div class="sidebar-section">
+          <div class="sidebar-section-label">Overview</div>
+          <button class="nav-item active" data-tab="dashboard" aria-current="page">
+            <span class="nav-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+              </svg>
+            </span>
+            Dashboard
+          </button>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-label">Commerce</div>
+          <button class="nav-item" data-tab="catalogue">
+            <span class="nav-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+              </svg>
+            </span>
+            Catalogue
+          </button>
+          <button class="nav-item" data-tab="cart">
+            <span class="nav-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+              </svg>
+            </span>
+            Cart & Checkout
+            <span id="sidebarCartBadge" class="nav-badge" style="display: none;">0</span>
+          </button>
+          <button class="nav-item" data-tab="orders">
+            <span class="nav-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+            </span>
+            Order History
+          </button>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-label">Intelligence</div>
+          <button class="nav-item" data-tab="assistant">
+            <span class="nav-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="2" ry="2"></rect>
+                <line x1="12" y1="9" x2="12" y2="15"></line>
+                <line x1="9" y1="12" x2="15" y2="12"></line>
+                <path d="M8 17h8"></path>
+                <path d="M12 17v4"></path>
+              </svg>
+            </span>
+            AI Assistant
+          </button>
+          <button class="nav-item" data-tab="reorder">
+            <span class="nav-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="14"></line>
+              </svg>
+            </span>
+            Reorder Engine
+          </button>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-label">Operations</div>
+          <button class="nav-item" data-tab="sync">
+            <span class="nav-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 4v6h-6"></path>
+                <path d="M1 20v-6h6"></path>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+              </svg>
+            </span>
+            Supplier Sync
+          </button>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="dealer-selector">
+          <label for="dealerSelect">Active Dealer</label>
+          <select id="dealerSelect" aria-label="Select active dealer">
+            <option value="1">Loading dealers…</option>
           </select>
         </div>
+      </div>
+    </aside>
 
-        <button class="cart-btn" onclick="switchTab('cart')">
-          <span>🛒 Cart</span>
-          <span id="headerCartCount" class="cart-count-badge">0</span>
-          <span id="headerCartTotal">₹0.00</span>
+    <!-- ================================================================
+         TOP BAR
+         ================================================================ -->
+    <header class="topbar" role="banner">
+      <div class="topbar-title" id="topbarTitle">
+        Dashboard <span>· Business overview</span>
+      </div>
+      <div class="topbar-actions">
+        <button class="cart-pill" data-tab="cart" aria-label="Open cart">
+          <span aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="9" cy="21" r="1"></circle>
+              <circle cx="20" cy="21" r="1"></circle>
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+          </span>
+          <span id="headerCartCount" class="cart-pill-count" aria-label="Cart item count">0</span>
+          <span id="headerCartTotal" aria-label="Cart total">₹0.00</span>
         </button>
       </div>
-    </div>
-  </header>
+    </header>
 
-  <!-- Navigation Tabs -->
-  <nav class="nav-tabs">
-    <div class="nav-tabs-inner">
-      <button class="tab-btn active" onclick="switchTab('catalogue')">📦 Catalogue</button>
-      <button class="tab-btn" onclick="switchTab('cart')">🛍️ Cart & Checkout (<span id="tabCartCount">0</span>)</button>
-      <button class="tab-btn" onclick="switchTab('orders')">📋 Order History</button>
-      <button class="tab-btn" onclick="switchTab('assistant')">🤖 AI Assistant</button>
-      <button class="tab-btn" onclick="switchTab('reorder')">📊 Reorder Engine</button>
-      <button class="tab-btn" onclick="switchTab('sync')">🔄 Supplier Sync</button>
-    </div>
-  </nav>
+    <!-- ================================================================
+         MAIN CONTENT
+         ================================================================ -->
+    <main class="main-content" role="main">
 
-  <!-- Main Container -->
-  <main>
-    <!-- TAB 1: CATALOGUE -->
-    <section id="tab-catalogue" class="tab-content active">
-      <div class="filters-grid">
-        <input type="text" id="searchInput" class="input-field" placeholder="Search SKU, part name, or brand..." oninput="debounceSearch()">
-        <input type="text" id="vehicleInput" class="input-field" placeholder="Vehicle fitment (e.g. Pulsar 150)..." oninput="debounceSearch()">
-        <select id="categorySelect" class="input-field" onchange="loadCatalogue(1)">
-          <option value="">All Categories</option>
-          <option value="Brakes">Brakes</option>
-          <option value="Drivetrain">Drivetrain</option>
-          <option value="Engine & Oils">Engine & Oils</option>
-          <option value="Filters">Filters</option>
-          <option value="Lighting & Electrical">Lighting & Electrical</option>
-          <option value="Body & Styling">Body & Styling</option>
-          <option value="Universal Accessories">Universal Accessories</option>
-        </select>
-        <button class="btn btn-secondary" onclick="resetFilters()">Reset</button>
-      </div>
+      <!-- TAB: DASHBOARD -->
+      <section id="tab-dashboard" class="tab-content active" role="tabpanel" aria-label="Dashboard overview">
+        <header class="section-header">
+          <div>
+            <h2>Dashboard</h2>
+            <p>Business overview and key metrics</p>
+          </div>
+        </header>
 
-      <div id="productCountBar" style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">Loading products...</div>
-      <div id="productsContainer" class="products-grid"></div>
+        <div id="dashboardStatsContainer" class="dashboard-stats"></div>
 
-      <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 1.5rem;">
-        <button id="prevPageBtn" class="btn btn-secondary" onclick="changePage(-1)">← Previous</button>
-        <span id="pageIndicator" style="font-size: 0.85rem; font-weight: 600;">Page 1</span>
-        <button id="nextPageBtn" class="btn btn-secondary" onclick="changePage(1)">Next →</button>
-      </div>
-    </section>
+        <div class="card" style="margin-top: var(--space-4);">
+          <header class="card-header">
+            <h3 class="card-title">Recent Orders</h3>
+          </header>
+          <div id="dashboardRecentOrdersContainer"></div>
+        </div>
+      </section>
 
-    <!-- TAB 2: CART & CHECKOUT -->
-    <section id="tab-cart" class="tab-content">
-      <div id="stockAlertBanner" style="display: none;" class="alert alert-error"></div>
-
-      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
-        <div class="card">
-          <h2 style="font-family: var(--font-display); font-size: 1.25rem; margin-bottom: 1rem;">Items in Draft Cart</h2>
-          <div id="cartItemsContainer"></div>
+      <!-- TAB: CATALOGUE -->
+      <section id="tab-catalogue" class="tab-content" role="tabpanel" aria-label="Product catalogue">
+        <div class="filters-bar" role="search" aria-label="Product filters">
+          <input type="text" id="searchInput" class="input-field" placeholder="Search SKU, part name, or brand…" aria-label="Search products">
+          <input type="text" id="vehicleInput" class="input-field" placeholder="Vehicle fitment (e.g. Pulsar 150)…" aria-label="Vehicle fitment">
+          <select id="categorySelect" class="input-field" aria-label="Category filter">
+            <option value="">All Categories</option>
+            <option value="Brakes">Brakes</option>
+            <option value="Drivetrain">Drivetrain</option>
+            <option value="Engine & Oils">Engine & Oils</option>
+            <option value="Filters">Filters</option>
+            <option value="Lighting & Electrical">Lighting & Electrical</option>
+            <option value="Body & Styling">Body & Styling</option>
+            <option value="Universal Accessories">Universal Accessories</option>
+          </select>
+          <button class="btn btn-secondary" onclick="App.clearCatalogueFilters()">Reset</button>
+          <button class="btn btn-primary" onclick="App.openBulkUploadModal()">Upload CSV</button>
         </div>
 
-        <div>
+        <div id="productCountBar" class="product-count-bar" aria-live="polite">Loading products…</div>
+        <div id="productsContainer" class="products-grid" role="list"></div>
+
+        <div class="pagination-bar" role="navigation" aria-label="Pagination">
+          <button id="prevPageBtn" class="btn btn-secondary" aria-label="Previous page">← Previous</button>
+          <span id="pageIndicator" class="page-indicator" aria-current="page">Page 1</span>
+          <button id="nextPageBtn" class="btn btn-secondary" aria-label="Next page">Next →</button>
+        </div>
+      </section>
+
+      <!-- TAB: CART & CHECKOUT -->
+      <section id="tab-cart" class="tab-content" role="tabpanel" aria-label="Cart and checkout">
+        <div id="stockAlertBanner" class="alert alert-error" style="display: none;" role="alert"></div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
           <div class="card">
-            <h3 style="font-family: var(--font-display); font-size: 1.1rem; margin-bottom: 1rem;">Order Summary</h3>
-            <div style="display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.9rem;">
-              <div style="display: flex; justify-content: space-between;">
-                <span style="color: var(--text-muted);">Items Subtotal:</span>
-                <span id="cartSubtotal" style="font-weight: 600;">₹0.00</span>
-              </div>
-              <div style="display: flex; justify-content: space-between;">
-                <span style="color: var(--text-muted);">GST (18% rounded per line):</span>
-                <span id="cartTax" style="font-weight: 600;">₹0.00</span>
-              </div>
-              <div style="height: 1px; background: var(--border); margin: 0.5rem 0;"></div>
-              <div style="display: flex; justify-content: space-between; font-size: 1.15rem; font-weight: 700;">
-                <span>Grand Total:</span>
-                <span id="cartGrandTotal" style="color: var(--accent);">₹0.00</span>
-              </div>
-            </div>
-
-            <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem;">
-              <button id="createDraftBtn" class="btn" onclick="createDraftOrder()" style="width: 100%;">
-                1. Create Draft Order
-              </button>
-              <button id="confirmOrderBtn" class="btn btn-success" onclick="confirmDraftOrder()" style="width: 100%; display: none;">
-                2. Confirm Order (Atomic Stock Lock)
-              </button>
-            </div>
-            <div id="activeOrderBadge" style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-muted); text-align: center;"></div>
+            <header class="card-header">
+              <h2 class="card-title">Items in Draft Cart</h2>
+            </header>
+            <div id="cartItemsContainer"></div>
           </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- TAB 3: ORDER HISTORY -->
-    <section id="tab-orders" class="tab-content">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-        <h2 style="font-family: var(--font-display); font-size: 1.25rem;">Order Invoices & Lifecycle</h2>
-        <div style="display: flex; gap: 0.5rem;">
-          <select id="orderStatusFilter" class="input-field" style="width: auto;" onchange="loadOrders()">
-            <option value="">All Statuses</option>
-            <option value="DRAFT">DRAFT</option>
-            <option value="CONFIRMED">CONFIRMED</option>
-            <option value="DISPATCHED">DISPATCHED</option>
-            <option value="DELIVERED">DELIVERED</option>
-            <option value="CANCELLED">CANCELLED</option>
-          </select>
-          <button class="btn btn-secondary" onclick="loadOrders()">Refresh</button>
-        </div>
-      </div>
-
-      <div id="ordersListContainer"></div>
-    </section>
-
-    <!-- TAB 4: AI ASSISTANT -->
-    <section id="tab-assistant" class="tab-content">
-      <div class="chat-container">
-        <div class="chat-messages" id="chatMessages">
-          <div class="chat-msg chat-msg-bot">
-            👋 Hello! I am DealerDesk AI. I can search vehicle parts, check real-time warehouse inventory, and create draft orders for you. Ask me anything!
-          </div>
-        </div>
-
-        <div style="padding: 0.5rem 1rem; background: #0b1120; border-top: 1px solid var(--border); display: flex; gap: 0.5rem; overflow-x: auto;">
-          <button class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;" onclick="sendPrompt('Do you have brake pads for a Pulsar 150?')">🔍 Pulsar 150 Brake Pads</button>
-          <button class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;" onclick="sendPrompt('Check stock for BRK-1044')">📦 Stock for BRK-1044</button>
-          <button class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;" onclick="sendPrompt('Order 2 of BRK-1044')">⚡ Order 2 of BRK-1044</button>
-        </div>
-
-        <div class="chat-input-bar">
-          <input type="text" id="chatInput" class="input-field" placeholder="Ask about motorcycle parts, stock, or create draft orders..." onkeydown="if(event.key==='Enter') sendChatMessage()">
-          <button class="btn" onclick="sendChatMessage()">Send</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- TAB 5: REORDER ENGINE -->
-    <section id="tab-reorder" class="tab-content">
-      <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
-        <div>
-          <h2 style="font-family: var(--font-display); font-size: 1.25rem;">Demand Forecasting & Automated Reorder Suggestions</h2>
-          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">
-            Calculates 4-week demand, sample standard deviation (σ), safety stock ⌈1.65 × σ × √L⌉, and reorder points based on live stock.
-          </p>
-        </div>
-        <button class="btn" onclick="loadReorderSuggestions()">Recalculate</button>
-      </div>
-
-      <div class="data-table-wrapper">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>SKU</th>
-              <th>Live Stock</th>
-              <th>Lead Time (L)</th>
-              <th>Lead Time Demand</th>
-              <th>Safety Stock</th>
-              <th>Reorder Point</th>
-              <th>Suggested Reorder</th>
-              <th>Forecast (4 Wks)</th>
-            </tr>
-          </thead>
-          <tbody id="reorderTableBody">
-            <tr><td colspan="8" style="text-align: center; padding: 2rem;">Loading reorder suggestions...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- TAB 6: SUPPLIER SYNC -->
-    <section id="tab-sync" class="tab-content">
-      <div class="card">
-        <h2 style="font-family: var(--font-display); font-size: 1.25rem; margin-bottom: 0.5rem;">Supplier Catalogue Integration (§8)</h2>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
-          Pulls product feed via cursor pagination from external ERP/Supplier with 5-retry policy, Retry-After adherence on 429, deduplication by latest updated_at, and all-or-nothing rollback.
-        </p>
-        <button id="triggerSyncBtn" class="btn" onclick="triggerSupplierSync()">
-          🔄 Run Supplier Sync Now
-        </button>
-      </div>
-
-      <div id="syncResultCard" class="card" style="display: none;">
-        <h3 style="font-family: var(--font-display); font-size: 1.1rem; margin-bottom: 1rem;">Sync Execution Summary</h3>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;" id="syncMetrics"></div>
-      </div>
-    </section>
-  </main>
-
-  <div id="toast-container"></div>
-
-  <script>
-    // State
-    let cart = {}; // sku -> {product, qty}
-    let currentPage = 1;
-    let totalPages = 1;
-    let searchDebounceTimer = null;
-    let currentDraftOrder = null;
-    let activeDealerId = 1;
-    const sessionId = "session-" + Math.random().toString(36).substring(2, 9);
-
-    document.addEventListener("DOMContentLoaded", () => {
-      loadDealers();
-      loadCatalogue(1);
-    });
-
-    function showToast(msg, type="info") {
-      const container = document.getElementById("toast-container");
-      const toast = document.createElement("div");
-      toast.className = "toast";
-      toast.textContent = msg;
-      container.appendChild(toast);
-      setTimeout(() => toast.remove(), 3500);
-    }
-
-    function switchTab(tabId) {
-      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
-      document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
-
-      const targetBtn = Array.from(document.querySelectorAll(".tab-btn")).find(b => b.textContent.toLowerCase().includes(tabId));
-      if (targetBtn) targetBtn.classList.add("active");
-
-      const targetTab = document.getElementById("tab-" + tabId);
-      if (targetTab) targetTab.classList.add("active");
-
-      if (tabId === 'orders') loadOrders();
-      if (tabId === 'reorder') loadReorderSuggestions();
-      if (tabId === 'cart') renderCart();
-    }
-
-    // Dealer management
-    async function loadDealers() {
-      try {
-        const res = await fetch("/api/dealers/?page_size=50");
-        const data = await res.json();
-        const select = document.getElementById("dealerSelect");
-        select.innerHTML = "";
-        data.results.forEach(d => {
-          const opt = document.createElement("option");
-          opt.value = d.id;
-          opt.textContent = `[${d.dealer_code}] ${d.name} (${d.city || 'HQ'})`;
-          select.appendChild(opt);
-        });
-        activeDealerId = parseInt(select.value);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    function onDealerChange() {
-      activeDealerId = parseInt(document.getElementById("dealerSelect").value);
-      showToast("Switched active dealer context", "info");
-      if (document.getElementById("tab-orders").classList.contains("active")) {
-        loadOrders();
-      }
-    }
-
-    // Catalogue
-    async function loadCatalogue(page = 1) {
-      currentPage = page;
-      const search = document.getElementById("searchInput").value.trim();
-      const vehicle = document.getElementById("vehicleInput").value.trim();
-      const category = document.getElementById("categorySelect").value;
-
-      let url = `/api/products/?page=${page}&page_size=18`;
-      if (search) url += `&search=${encodeURIComponent(search)}`;
-      if (vehicle) url += `&vehicle=${encodeURIComponent(vehicle)}`;
-      if (category) url += `&category=${encodeURIComponent(category)}`;
-
-      const container = document.getElementById("productsContainer");
-      container.innerHTML = "<div style='color: var(--text-muted); padding: 2rem;'>Loading parts catalog...</div>";
-
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-        totalPages = Math.ceil(data.count / 18) || 1;
-
-        document.getElementById("productCountBar").textContent = `Found ${data.count} parts (Page ${currentPage} of ${totalPages})`;
-        document.getElementById("pageIndicator").textContent = `Page ${currentPage} of ${totalPages}`;
-        document.getElementById("prevPageBtn").disabled = currentPage <= 1;
-        document.getElementById("nextPageBtn").disabled = currentPage >= totalPages;
-
-        container.innerHTML = "";
-        if (data.results.length === 0) {
-          container.innerHTML = "<div style='grid-column: 1/-1; padding: 2rem; color: var(--text-muted);'>No matching parts found.</div>";
-          return;
-        }
-
-        data.results.forEach(p => {
-          const card = document.createElement("div");
-          card.className = "product-card";
-
-          let stockClass = "stock-in";
-          let stockText = `${p.stock} in stock`;
-          if (p.stock === 0) { stockClass = "stock-out"; stockText = "Out of Stock"; }
-          else if (p.stock < 15) { stockClass = "stock-low"; stockText = `Low: ${p.stock} units`; }
-
-          card.innerHTML = `
-            <div>
-              <div class="product-top">
-                <span class="sku-badge">${p.sku}</span>
-                <span class="brand-tag">${p.brand}</span>
-              </div>
-              <div class="product-title" style="margin-top: 0.5rem;">${p.name}</div>
-              <div class="product-meta" style="margin-top: 0.5rem;">
-                <span class="meta-pill">📂 ${p.category}</span>
-                <span class="meta-pill">🏍️ ${p.vehicle_fitment}</span>
-              </div>
-            </div>
-
-            <div>
-              <div class="product-pricing-stock">
-                <span class="price-value">₹${p.price}</span>
-                <span class="stock-badge ${stockClass}">${stockText}</span>
-              </div>
-
-              <div class="qty-add-bar">
-                <div class="qty-stepper">
-                  <button class="qty-btn" onclick="stepCardQty('${p.sku}', -1)">-</button>
-                  <input type="text" id="qty-${p.sku}" class="qty-input" value="1" readonly>
-                  <button class="qty-btn" onclick="stepCardQty('${p.sku}', 1)">+</button>
+          <aside>
+            <div class="card" style="position: sticky; top: calc(var(--header-height) + 1.5rem);">
+              <h3 class="card-title" style="margin-bottom: 1.25rem;">Order Summary</h3>
+              <dl style="display: flex; flex-direction: column; gap: 0.65rem; font-size: var(--text-sm);">
+                <div style="display: flex; justify-content: space-between;">
+                  <dt style="color: var(--color-text-secondary);">Items Subtotal</dt>
+                  <dd id="cartSubtotal" style="font-weight: 600;">₹0.00</dd>
                 </div>
-                <button class="btn" style="flex: 1;" onclick="addToCart('${p.sku}', '${encodeURIComponent(JSON.stringify(p))}')">
-                  Add to Cart
+                <div style="display: flex; justify-content: space-between;">
+                  <dt style="color: var(--color-text-secondary);">GST (18% per line)</dt>
+                  <dd id="cartTax" style="font-weight: 600;">₹0.00</dd>
+                </div>
+                <div style="height: 1.5px; background: var(--color-border-subtle); margin: 0.4rem 0;"></div>
+                <div style="display: flex; justify-content: space-between; font-size: var(--text-lg); font-weight: 700;">
+                  <dt>Grand Total</dt>
+                  <dd id="cartGrandTotal" style="color: var(--color-text-primary);">₹0.00</dd>
+                </div>
+              </dl>
+
+              <div style="margin-top: 1.75rem; display: flex; flex-direction: column; gap: 0.75rem;">
+                <button id="createDraftBtn" class="btn btn-primary btn-full" onclick="App.createDraftOrder()">
+                  Create Draft Order
+                </button>
+                <button id="confirmOrderBtn" class="btn btn-primary btn-full" onclick="App.confirmDraftOrder()" style="display: none;">
+                  Confirm Order — Lock Stock
                 </button>
               </div>
+              <div id="activeOrderBadge" style="margin-top: 1rem; font-size: var(--text-sm); color: var(--color-text-secondary); text-align: center;"></div>
             </div>
-          `;
-          container.appendChild(card);
-        });
-      } catch (err) {
-        container.innerHTML = `<div class="alert alert-error">Error loading catalog: ${err.message}</div>`;
-      }
-    }
+          </aside>
+        </div>
+      </section>
 
-    function stepCardQty(sku, delta) {
-      const el = document.getElementById("qty-" + sku);
-      let val = parseInt(el.value) + delta;
-      if (val < 1) val = 1;
-      el.value = val;
-    }
-
-    function debounceSearch() {
-      clearTimeout(searchDebounceTimer);
-      searchDebounceTimer = setTimeout(() => loadCatalogue(1), 300);
-    }
-
-    function resetFilters() {
-      document.getElementById("searchInput").value = "";
-      document.getElementById("vehicleInput").value = "";
-      document.getElementById("categorySelect").value = "";
-      loadCatalogue(1);
-    }
-
-    function changePage(delta) {
-      const target = currentPage + delta;
-      if (target >= 1 && target <= totalPages) loadCatalogue(target);
-    }
-
-    // Cart Management
-    function addToCart(sku, encodedProduct) {
-      const p = JSON.parse(decodeURIComponent(encodedProduct));
-      const qtyInput = document.getElementById("qty-" + sku);
-      const qty = parseInt(qtyInput ? qtyInput.value : 1) || 1;
-
-      if (!cart[sku]) {
-        cart[sku] = { product: p, quantity: 0 };
-      }
-      cart[sku].quantity += qty;
-      updateCartSummary();
-      showToast(`Added ${qty} x ${p.sku} to cart`);
-    }
-
-    function updateCartSummary() {
-      let count = 0;
-      let subtotal = 0;
-      let tax = 0;
-
-      for (const sku in cart) {
-        const item = cart[sku];
-        const lineSub = parseFloat(item.product.price) * item.quantity;
-        const lineTax = Math.round(lineSub * 0.18 * 100) / 100;
-        count += item.quantity;
-        subtotal += lineSub;
-        tax += lineTax;
-      }
-
-      document.getElementById("headerCartCount").textContent = count;
-      document.getElementById("tabCartCount").textContent = count;
-      document.getElementById("headerCartTotal").textContent = `₹${(subtotal + tax).toFixed(2)}`;
-      document.getElementById("cartSubtotal").textContent = `₹${subtotal.toFixed(2)}`;
-      document.getElementById("cartTax").textContent = `₹${tax.toFixed(2)}`;
-      document.getElementById("cartGrandTotal").textContent = `₹${(subtotal + tax).toFixed(2)}`;
-    }
-
-    function renderCart() {
-      updateCartSummary();
-      const container = document.getElementById("cartItemsContainer");
-      container.innerHTML = "";
-
-      const keys = Object.keys(cart);
-      if (keys.length === 0) {
-        container.innerHTML = `
-          <div style="text-align: center; padding: 3rem; color: var(--text-muted);">
-            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🛒</div>
-            <div>Your cart is empty.</div>
-            <button class="btn btn-secondary" style="margin-top: 1rem;" onclick="switchTab('catalogue')">Browse Products</button>
-          </div>
-        `;
-        document.getElementById("createDraftBtn").disabled = true;
-        return;
-      }
-      document.getElementById("createDraftBtn").disabled = false;
-
-      keys.forEach(sku => {
-        const item = cart[sku];
-        const lineSub = (parseFloat(item.product.price) * item.quantity).toFixed(2);
-        const lineTax = (lineSub * 0.18).toFixed(2);
-
-        const row = document.createElement("div");
-        row.style.cssText = "display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--border);";
-        row.innerHTML = `
+      <!-- TAB: ORDER HISTORY -->
+      <section id="tab-orders" class="tab-content" role="tabpanel" aria-label="Order history">
+        <header class="section-header">
           <div>
-            <div style="font-weight: 600; font-size: 0.95rem;">${item.product.name}</div>
-            <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent);">${sku} · ₹${item.product.price} each</div>
+            <h2>Order History</h2>
+            <p>Track invoices and manage order lifecycle</p>
           </div>
-          <div style="display: flex; align-items: center; gap: 1rem;">
-            <div class="qty-stepper">
-              <button class="qty-btn" onclick="updateCartItemQty('${sku}', -1)">-</button>
-              <span class="qty-input" style="line-height: 32px;">${item.quantity}</span>
-              <button class="qty-btn" onclick="updateCartItemQty('${sku}', 1)">+</button>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <select id="orderStatusFilter" class="input-field" style="width: auto;" aria-label="Filter by status">
+              <option value="">All Statuses</option>
+              <option value="DRAFT">DRAFT</option>
+              <option value="CONFIRMED">CONFIRMED</option>
+              <option value="DISPATCHED">DISPATCHED</option>
+              <option value="DELIVERED">DELIVERED</option>
+              <option value="CANCELLED">CANCELLED</option>
+            </select>
+            <button class="btn btn-secondary" onclick="App.loadOrders()">Refresh</button>
+          </div>
+        </header>
+        <div id="ordersListContainer"></div>
+      </section>
+
+      <!-- TAB: AI ASSISTANT -->
+      <section id="tab-assistant" class="tab-content" role="tabpanel" aria-label="AI Assistant">
+        <div class="chat-container" role="region" aria-label="Chat with AI Assistant">
+          <header class="chat-header">
+            <div class="chat-header-dot" aria-hidden="true"></div>
+            <div class="chat-header-text">DealerDesk AI — Parts Search, Stock & Orders</div>
+          </header>
+          <div class="chat-messages" id="chatMessages" role="log" aria-live="polite" aria-label="Conversation">
+            <div class="chat-msg chat-msg-bot">
+              Hello! I'm your DealerDesk assistant. I can search motorcycle parts, check real-time warehouse stock, and create draft orders. What can I help with?
             </div>
-            <div style="text-align: right; min-width: 90px;">
-              <div style="font-weight: 700;">₹${lineSub}</div>
-              <div style="font-size: 0.7rem; color: var(--text-muted);">+₹${lineTax} GST</div>
-            </div>
-            <button style="background: none; border: none; color: #ef4444; cursor: pointer;" onclick="delete cart['${sku}']; renderCart();">✕</button>
           </div>
-        `;
-        container.appendChild(row);
-      });
-    }
 
-    function updateCartItemQty(sku, delta) {
-      if (!cart[sku]) return;
-      cart[sku].quantity += delta;
-      if (cart[sku].quantity <= 0) delete cart[sku];
-      renderCart();
-    }
-
-    // Orders workflow
-    async function createDraftOrder() {
-      const items = Object.keys(cart).map(sku => ({ sku: sku, quantity: cart[sku].quantity }));
-      if (items.length === 0) return;
-
-      const alertBanner = document.getElementById("stockAlertBanner");
-      alertBanner.style.display = "none";
-
-      try {
-        const res = await fetch("/api/orders/", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ dealer_id: activeDealerId, items: items })
-        });
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data.error ? data.error.message : "Error creating draft");
-        }
-
-        currentDraftOrder = data;
-        document.getElementById("createDraftBtn").style.display = "none";
-        document.getElementById("confirmOrderBtn").style.display = "block";
-        document.getElementById("activeOrderBadge").innerHTML = `
-          Draft Created: <strong style="color: #fff;">${data.order_number}</strong>
-          <span class="badge badge-DRAFT" style="margin-left: 0.5rem;">DRAFT</span>
-        `;
-        showToast(`Draft Order ${data.order_number} created!`, "success");
-      } catch (err) {
-        alertBanner.textContent = err.message;
-        alertBanner.style.display = "block";
-      }
-    }
-
-    async function confirmDraftOrder() {
-      if (!currentDraftOrder) return;
-      const orderNumber = currentDraftOrder.order_number;
-      const alertBanner = document.getElementById("stockAlertBanner");
-      alertBanner.style.display = "none";
-
-      try {
-        const res = await fetch(`/api/orders/${orderNumber}/confirm/`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" }
-        });
-        const data = await res.json();
-        if (!res.ok) {
-          if (res.status === 409 && data.error && data.error.code === 'INSUFFICIENT_STOCK') {
-            let detailsList = (data.error.details || []).map(d => `• SKU ${d.sku}: Requested ${d.requested}, Available ${d.available}`).join("<br>");
-            alertBanner.innerHTML = `<strong>Insufficient Stock to Confirm:</strong><br>${data.error.message}<br><br>${detailsList}`;
-            alertBanner.style.display = "block";
-            return;
-          }
-          throw new Error(data.error ? data.error.message : "Error confirming order");
-        }
-
-        showToast(`Order ${orderNumber} CONFIRMED! Stock deducted.`, "success");
-        cart = {};
-        currentDraftOrder = null;
-        document.getElementById("createDraftBtn").style.display = "block";
-        document.getElementById("confirmOrderBtn").style.display = "none";
-        document.getElementById("activeOrderBadge").innerHTML = "";
-        renderCart();
-        switchTab("orders");
-      } catch (err) {
-        alertBanner.textContent = err.message;
-        alertBanner.style.display = "block";
-      }
-    }
-
-    // Orders History
-    async function loadOrders() {
-      const container = document.getElementById("ordersListContainer");
-      container.innerHTML = "<div style='color: var(--text-muted); padding: 2rem;'>Loading orders...</div>";
-      const statusFilter = document.getElementById("orderStatusFilter").value;
-
-      let url = `/api/orders/?dealer_id=${activeDealerId}&page_size=20`;
-      if (statusFilter) url += `&status=${statusFilter}`;
-
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-        container.innerHTML = "";
-
-        if (data.results.length === 0) {
-          container.innerHTML = "<div class='card' style='color: var(--text-muted); text-align: center; padding: 3rem;'>No orders found for this dealer.</div>";
-          return;
-        }
-
-        data.results.forEach(ord => {
-          const card = document.createElement("div");
-          card.className = "card";
-          const itemsHtml = ord.items.map(it => `
-            <tr>
-              <td><code>${it.sku}</code></td>
-              <td>${it.name}</td>
-              <td>${it.quantity}</td>
-              <td>₹${it.unit_price}</td>
-              <td>₹${it.line_subtotal}</td>
-              <td>₹${it.line_tax}</td>
-              <td><strong>₹${it.line_total}</strong></td>
-            </tr>
-          `).join("");
-
-          let actionButtons = "";
-          if (ord.status === 'DRAFT') {
-            actionButtons = `
-              <button class="btn btn-success" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;" onclick="confirmExistingOrder('${ord.order_number}')">Confirm</button>
-              <button class="btn btn-danger" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;" onclick="cancelOrder('${ord.order_number}')">Cancel</button>
-            `;
-          } else if (ord.status === 'CONFIRMED') {
-            actionButtons = `
-              <button class="btn" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;" onclick="dispatchOrder('${ord.order_number}')">Dispatch</button>
-              <button class="btn btn-danger" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;" onclick="cancelOrder('${ord.order_number}')">Cancel & Restore Stock</button>
-            `;
-          } else if (ord.status === 'DISPATCHED') {
-            actionButtons = `
-              <button class="btn btn-success" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;" onclick="deliverOrder('${ord.order_number}')">Mark Delivered</button>
-            `;
-          }
-
-          card.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-              <div>
-                <span style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700;">${ord.order_number}</span>
-                <span class="badge badge-${ord.status}" style="margin-left: 0.5rem;">${ord.status}</span>
-                <span style="font-size: 0.75rem; color: var(--text-muted); margin-left: 0.5rem;">${new Date(ord.created_at).toLocaleString()}</span>
-              </div>
-              <div style="display: flex; gap: 0.5rem;">${actionButtons}</div>
-            </div>
-
-            <div class="data-table-wrapper" style="margin-bottom: 0.75rem;">
-              <table class="data-table">
-                <thead>
-                  <tr><th>SKU</th><th>Part</th><th>Qty</th><th>Unit Price</th><th>Subtotal</th><th>GST (18%)</th><th>Total</th></tr>
-                </thead>
-                <tbody>${itemsHtml}</tbody>
-              </table>
-            </div>
-
-            <div style="display: flex; justify-content: flex-end; gap: 2rem; font-size: 0.85rem;">
-              <div>Subtotal: <strong>₹${ord.subtotal}</strong></div>
-              <div>GST: <strong>₹${ord.tax_total}</strong></div>
-              <div style="font-size: 1rem; color: var(--accent);">Grand Total: <strong>₹${ord.grand_total}</strong></div>
-            </div>
-          `;
-          container.appendChild(card);
-        });
-      } catch (err) {
-        container.innerHTML = `<div class="alert alert-error">Error: ${err.message}</div>`;
-      }
-    }
-
-    async function confirmExistingOrder(orderNumber) {
-      const res = await fetch(`/api/orders/${orderNumber}/confirm/`, { method: "POST" });
-      const data = await res.json();
-      if (!res.ok) alert(data.error ? data.error.message : "Error confirming");
-      else { showToast(`Confirmed ${orderNumber}`); loadOrders(); }
-    }
-
-    async function dispatchOrder(orderNumber) {
-      const res = await fetch(`/api/orders/${orderNumber}/dispatch/`, { method: "POST" });
-      const data = await res.json();
-      if (!res.ok) alert(data.error ? data.error.message : "Error dispatching");
-      else { showToast(`Dispatched ${orderNumber}`); loadOrders(); }
-    }
-
-    async function deliverOrder(orderNumber) {
-      const res = await fetch(`/api/orders/${orderNumber}/deliver/`, { method: "POST" });
-      const data = await res.json();
-      if (!res.ok) alert(data.error ? data.error.message : "Error delivering");
-      else { showToast(`Delivered ${orderNumber}`); loadOrders(); }
-    }
-
-    async function cancelOrder(orderNumber) {
-      if (!confirm(`Cancel order ${orderNumber}? Stock will be restored if previously confirmed.`)) return;
-      const res = await fetch(`/api/orders/${orderNumber}/cancel/`, { method: "POST" });
-      const data = await res.json();
-      if (!res.ok) alert(data.error ? data.error.message : "Error cancelling");
-      else { showToast(`Cancelled ${orderNumber}`); loadOrders(); }
-    }
-
-    // AI Assistant Chat
-    async function sendChatMessage() {
-      const input = document.getElementById("chatInput");
-      const text = input.value.trim();
-      if (!text) return;
-      input.value = "";
-      sendPrompt(text);
-    }
-
-    async function sendPrompt(text) {
-      const container = document.getElementById("chatMessages");
-      const userMsg = document.createElement("div");
-      userMsg.className = "chat-msg chat-msg-user";
-      userMsg.textContent = text;
-      container.appendChild(userMsg);
-      container.scrollTop = container.scrollHeight;
-
-      const botLoading = document.createElement("div");
-      botLoading.className = "chat-msg chat-msg-bot";
-      botLoading.textContent = "Thinking & querying parts catalog...";
-      container.appendChild(botLoading);
-      container.scrollTop = container.scrollHeight;
-
-      try {
-        const res = await fetch("/api/assistant/chat/", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ session_id: sessionId, dealer_id: activeDealerId, message: text })
-        });
-        const data = await res.json();
-        botLoading.remove();
-
-        const botMsg = document.createElement("div");
-        botMsg.className = "chat-msg chat-msg-bot";
-        botMsg.innerHTML = data.reply.replace(/\n/g, "<br>");
-
-        if (data.tool_calls && data.tool_calls.length > 0) {
-          const toolCallsHtml = data.tool_calls.map(tc => `⚡ Tool: ${tc.name}(${JSON.stringify(tc.arguments)})`).join("<br>");
-          botMsg.innerHTML += `<div class="tool-call-box">${toolCallsHtml}</div>`;
-        }
-        if (data.actions && data.actions.length > 0) {
-          const actionsHtml = data.actions.map(act => `✨ Action: ${act.type} (Order ${act.order_number})`).join("<br>");
-          botMsg.innerHTML += `<div class="tool-call-box" style="color: #34d399; border-color: rgba(52, 211, 153, 0.4);">${actionsHtml}</div>`;
-        }
-
-        container.appendChild(botMsg);
-        container.scrollTop = container.scrollHeight;
-      } catch (err) {
-        botLoading.textContent = "Error communicating with AI assistant: " + err.message;
-      }
-    }
-
-    // Reorder Dashboard
-    async function loadReorderSuggestions() {
-      const tbody = document.getElementById("reorderTableBody");
-      tbody.innerHTML = "<tr><td colspan='8' style='text-align: center; padding: 2rem;'>Calculating lead times & safety stocks...</td></tr>";
-
-      try {
-        const res = await fetch("/api/reorder-suggestions/");
-        const data = await res.json();
-        tbody.innerHTML = "";
-
-        data.results.forEach(row => {
-          const tr = document.createElement("tr");
-          const reorderBadge = row.reorder_qty > 0 
-            ? `<span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4);">REORDER +${row.reorder_qty}</span>`
-            : `<span style="color: #34d399; font-weight: 600;">Optimal (0)</span>`;
-
-          tr.innerHTML = `
-            <td><code>${row.sku}</code></td>
-            <td><strong>${row.current_stock}</strong></td>
-            <td>${row.lead_time_weeks} wks</td>
-            <td>${row.lead_time_demand}</td>
-            <td>${row.safety_stock}</td>
-            <td>${row.reorder_point}</td>
-            <td>${reorderBadge}</td>
-            <td><button class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" onclick="viewForecastModal('${row.sku}')">Inspect</button></td>
-          `;
-          tbody.appendChild(tr);
-        });
-      } catch (err) {
-        tbody.innerHTML = `<tr><td colspan='8' class='alert alert-error'>Error: ${err.message}</td></tr>`;
-      }
-    }
-
-    async function viewForecastModal(sku) {
-      try {
-        const res = await fetch(`/api/forecast/${sku}/`);
-        const data = await res.json();
-        const forecastText = data.forecast.map(f => `${f.week_start}: ${f.forecast_units} units`).join("\n");
-        alert(`4-Week Demand Forecast for SKU ${sku}:\n\n` + forecastText);
-      } catch (e) {
-        alert("Could not load forecast for " + sku);
-      }
-    }
-
-    // Supplier Sync
-    async function triggerSupplierSync() {
-      const btn = document.getElementById("triggerSyncBtn");
-      btn.disabled = true;
-      btn.textContent = "⏳ Running Full Sync across Pages (Retries + Dedup)...";
-
-      try {
-        const res = await fetch("/api/sync/supplier/", { method: "POST" });
-        const data = await res.json();
-        btn.disabled = false;
-        btn.textContent = "🔄 Run Supplier Sync Now";
-
-        if (!res.ok) {
-          alert("Sync failed: " + (data.error ? data.error.message : "Supplier unavailable (502)"));
-          return;
-        }
-
-        document.getElementById("syncResultCard").style.display = "block";
-        const metricsContainer = document.getElementById("syncMetrics");
-        metricsContainer.innerHTML = `
-          <div class="card" style="margin: 0; background: #0b1120;">
-            <div style="font-size: 0.75rem; color: var(--text-muted);">New Parts Created</div>
-            <div style="font-size: 1.5rem; font-weight: 700; color: #34d399;">${data.created}</div>
+          <div class="chat-suggestions" role="group" aria-label="Suggested prompts">
+            <button class="chat-suggestion-btn" onclick="App.sendPrompt('Do you have brake pads for a Pulsar 150?')">Pulsar 150 Brake Pads</button>
+            <button class="chat-suggestion-btn" onclick="App.sendPrompt('Check stock for BRK-1044')">Stock for BRK-1044</button>
+            <button class="chat-suggestion-btn" onclick="App.sendPrompt('Order 2 of BRK-1044')">Order 2 × BRK-1044</button>
           </div>
-          <div class="card" style="margin: 0; background: #0b1120;">
-            <div style="font-size: 0.75rem; color: var(--text-muted);">Existing Updated</div>
-            <div style="font-size: 1.5rem; font-weight: 700; color: #38bdf8;">${data.updated}</div>
+
+          <div class="chat-input-bar" role="group" aria-label="Message input">
+            <input type="text" id="chatInput" class="input-field" placeholder="Ask about motorcycle parts, stock, or create orders…" aria-label="Your message">
+            <button class="btn btn-primary" onclick="App.sendChatMessage()">Send</button>
           </div>
-          <div class="card" style="margin: 0; background: #0b1120;">
-            <div style="font-size: 0.75rem; color: var(--text-muted);">Unchanged</div>
-            <div style="font-size: 1.5rem; font-weight: 700; color: #cbd5e1;">${data.unchanged}</div>
+        </div>
+      </section>
+
+      <!-- TAB: REORDER ENGINE -->
+      <section id="tab-reorder" class="tab-content" role="tabpanel" aria-label="Reorder engine">
+        <div class="card" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
+          <div>
+            <h2 class="card-title">Demand Forecasting & Reorder Suggestions</h2>
+            <p style="font-size: var(--text-sm); color: var(--color-text-secondary); margin-top: 0.5rem;">
+              4-week demand, safety stock, and live reorder points.
+            </p>
           </div>
-          <div class="card" style="margin: 0; background: #0b1120;">
-            <div style="font-size: 0.75rem; color: var(--text-muted);">Rejected Items</div>
-            <div style="font-size: 1.5rem; font-weight: 700; color: #f87171;">${data.rejected ? data.rejected.length : 0}</div>
-          </div>
-          <div class="card" style="margin: 0; background: #0b1120;">
-            <div style="font-size: 0.75rem; color: var(--text-muted);">Pages Fetched / Requests</div>
-            <div style="font-size: 1.5rem; font-weight: 700; color: #a78bfa;">${data.pages_fetched} / ${data.requests_made}</div>
-          </div>
-        `;
-        showToast("Supplier sync finished successfully!", "success");
-      } catch (err) {
-        btn.disabled = false;
-        btn.textContent = "🔄 Run Supplier Sync Now";
-        alert("Error executing sync: " + err.message);
-      }
-    }
-  </script>
+          <button class="btn btn-primary" onclick="App.loadReorderSuggestions()">Recalculate</button>
+        </div>
+
+        <div class="data-table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>SKU</th>
+                <th>Live Stock</th>
+                <th>Lead Time (L)</th>
+                <th>Lead Time Demand</th>
+                <th>Safety Stock</th>
+                <th>Reorder Point</th>
+                <th>Suggested Reorder</th>
+                <th>Forecast (4 Wks)</th>
+              </tr>
+            </thead>
+            <tbody id="reorderTableBody">
+              <tr><td colspan="8" style="text-align: center; padding: 2rem; color: var(--color-text-muted);">Loading reorder suggestions…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB: SUPPLIER SYNC -->
+      <section id="tab-sync" class="tab-content" role="tabpanel" aria-label="Supplier sync">
+        <div class="card">
+          <h2 class="card-title" style="margin-bottom: 0.5rem;">Supplier Catalogue Sync</h2>
+          <p style="font-size: var(--text-sm); color: var(--color-text-secondary); margin-bottom: 1.25rem;">
+            Paginated cursor feed with 5-retry policy, Retry-After on 429, deduplication by latest updated_at, and atomic rollback.
+          </p>
+          <button id="triggerSyncBtn" class="btn btn-primary" onclick="App.triggerSupplierSync()">
+            <span aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 4v6h-6"></path>
+                <path d="M1 20v-6h6"></path>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+              </svg>
+            </span>
+            Run Supplier Sync
+          </button>
+        </div>
+
+        <div id="syncResultCard" class="card" style="display: none;">
+          <h3 class="card-title" style="margin-bottom: 1.25rem;">Sync Results</h3>
+          <div class="stat-grid" id="syncMetrics"></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Forecast Inspection Modal -->
+  <div id="forecastModal" class="modal-backdrop" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="forecastModalTitle">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title" id="forecastModalTitle">Demand Forecast</h3>
+        <button class="modal-close" onclick="App.closeForecastModal()" aria-label="Close modal">✕</button>
+      </div>
+      <div class="modal-body" id="forecastModalBody">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="App.closeForecastModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bulk Upload Modal -->
+  <div id="bulkUploadModal" class="modal-backdrop" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="bulkUploadModalTitle">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title" id="bulkUploadModalTitle">Bulk Upload Catalogue CSV</h3>
+        <button class="modal-close" onclick="App.closeBulkUploadModal()" aria-label="Close modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: var(--text-sm); color: var(--color-text-secondary); margin-bottom: 1.25rem;">
+          Upload products CSV to update or insert catalog items. Columns expected: <code>sku, name, category, brand, vehicle_fitment, price, stock, description</code>.
+        </p>
+        <div style="border: 2px dashed var(--color-border-default); border-radius: var(--radius-lg); padding: 2rem 1rem; text-align: center; background: var(--color-bg-sunken); cursor: pointer; transition: all var(--duration-fast);" onclick="document.getElementById('csvFileInput').click()">
+          <input type="file" id="csvFileInput" accept=".csv" style="display: none;" onchange="App.handleCsvFileSelect(event)">
+          <div style="font-size: 2.25rem; margin-bottom: 0.5rem;">📁</div>
+          <div style="font-weight: 700; color: var(--color-text-primary); font-size: var(--text-md);" id="csvFileName">Click or drag CSV file here</div>
+          <div style="font-size: var(--text-xs); color: var(--color-text-muted); margin-top: 0.35rem;">Supports standard UTF-8 CSV up to 10MB</div>
+        </div>
+        <div id="bulkUploadStatus" style="margin-top: 1rem;"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="App.closeBulkUploadModal()">Cancel</button>
+        <button id="uploadCsvBtn" class="btn btn-primary" onclick="App.submitBulkCsv()" disabled>Import Products</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container" aria-live="polite" aria-label="Notifications"></div>
+
+  <!-- Application Script -->
+  <script type="module" src="{% static 'js/app.js' %}"></script>
 </body>
 </html>
